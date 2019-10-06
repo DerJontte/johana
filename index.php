@@ -8,8 +8,8 @@
 
 // Global constants.
 define('APP_PATH', getcwd() . '/');
-define('VIEW_DIR', APP_PATH.'application/view/');
-define('CONTROLLER_DIR', APP_PATH.'application/controller/');
+define('VIEW_DIR', APP_PATH . 'application/view/');
+define('CONTROLLER_DIR', APP_PATH . 'application/controller/');
 
 // The order of the include dir's is very important. Change them at Your own risk!
 $include_dirs = array(
@@ -26,9 +26,21 @@ foreach ($include_dirs as $dir) {
 	}
 }
 
-$result = DB::select('*')->from('db')->where('Db', '=', 'sys')->execute();
-
-foreach ($result as $row) {
-	echo print_r($row).'<br>';
+$columns = array('User');
+try {
+	$result = DB::select($columns)
+				->from('db')
+				->join('user')
+				->order_by('User', 'ASC')
+				->distinct()
+				->execute();
+} catch (Exception $e) {
+	echo $e->getMessage() . '<br>';
+	echo 'Line ' . $e->getLine() . ' in ' . $e->getFile() . '<br>';
 }
-//Route::dispatch();
+
+while ($row = $result->fetch_assoc()) {
+	print_r($row);
+	echo '<br>';
+}
+// Route::dispatch();
