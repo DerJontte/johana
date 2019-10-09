@@ -6,12 +6,16 @@
  * URI in the location bar and invokes the correct controller and methods.
  */
 
-// Global constants.
+// Global constants
+const IN_PRODUCTION = true;
+const VERBOSE_ERRORS = true;
+
+// Application paths
 define('APP_PATH', getcwd() . '/');
 define('VIEW_DIR', APP_PATH . 'application/view/');
 define('CONTROLLER_DIR', APP_PATH . 'application/controller/');
 
-// The order of the include dir's is very important. Change them at Your own risk!
+// Sistem include directories. The order of the directories is very important. Change them at Your own risk!
 $include_dirs = array(
 	'system',
 	'config',
@@ -26,21 +30,14 @@ foreach ($include_dirs as $dir) {
 	}
 }
 
-$columns = array('User');
 try {
-	$result = DB::select($columns)
-				->from('db')
-				->join('user')
-				->order_by('User', 'ASC')
-				->distinct()
-				->execute();
+	Route::dispatch();
 } catch (Exception $e) {
-	echo $e->getMessage() . '<br>';
-	echo 'Line ' . $e->getLine() . ' in ' . $e->getFile() . '<br>';
+	if (VERBOSE_ERRORS) {
+		echo $e->getMessage() . '<br>';
+		echo 'Line ' . $e->getLine() . ' in ' . $e->getFile() . '<br>';
+	} else {
+		Http::redirect(Route::get('404'));
+	}
 }
 
-while ($row = $result->fetch_assoc()) {
-	print_r($row);
-	echo '<br>';
-}
-// Route::dispatch();
