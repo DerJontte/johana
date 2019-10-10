@@ -3,9 +3,8 @@
 
 class Auth {
 	public static function login($username, $password) {
-		if ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'off') && IN_PRODUCTION) {
-			throw new Exception('Credentials can only be sent over a secure connection, please use HTTPS.');
-		}
+		Http::require_https();
+
 	}
 
 	public static function required(array $roles) {

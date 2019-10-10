@@ -9,6 +9,7 @@
 // Global constants
 const IN_PRODUCTION = true;
 const VERBOSE_ERRORS = true;
+const REQUIRE_HTTPS = false;
 
 // Application paths
 define('APP_PATH', getcwd() . '/');
