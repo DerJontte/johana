@@ -3,18 +3,17 @@
 class Controller_Base extends Controller {
 
 	public function action_index() {
-		Auth::login(null, null);
+//		Auth::login(null, null);
+//		Auth::required(array('logged', 'admin'));
 		$users = new Model_User();
-		$users->select('Host')->select('User');
-		$users->join('db')->select('db.User as dbuser');
+		$users->select('Host')->select('User')->join('db')->select('db.User')->where('user.User', '=', '"phpmyadmin"');
 		$users = $users->find_all();
 
 		// TODO: REMOVE
-		print_r($users);echo '<br><br>';
-		foreach ($users as $user){
+		if(!empty($users)) foreach ($users as $user){
+			$user = str_replace('_', '.', $user);
 			print_r($user);echo '<br><br>';
 		}
-//		Auth::required(array('logged', 'admin'));
 	}
 
 	public function action_404() {

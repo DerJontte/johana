@@ -12,9 +12,11 @@ class ORM {
 	public $order_by_array = array();
 	public $limit = null;
 	public $model = null;
+	public $group_by = null;
 
 	private $has_multiple_where = false;
 	private $has_multiple_select = false;
+	private $last_command = null;
 
 	public function __construct($query_type = null, $args = null, $db_table = null) {
 		$this->connection = new DB_Connection();
@@ -34,19 +36,34 @@ class ORM {
 	}
 
 	public function select($columns = null) {
+		if($this->query_columns == array('*')) $this->query_columns = array();
+
+		if(!is_null($columns)) {
+			$columns = is_array($columns) ? $columns : array($columns);
+
+			foreach ($columns as $idx => $column) {
+				if(strpos($column, '*') === false) {
+					if(strpos($column, '.') === false) {
+						$column = $this->from_table . '.' . $column;
+					}
+					if(!strpos($column, 'AS')) {
+						$column .= ' AS ' . str_replace('.', '_', $column);
+					}
+				}
+				$columns[$idx] = $column;
+			}
+		} else {
+			$columns = array('*');
+		}
+
+		$this->query_columns = array_merge($this->query_columns, $columns);
+
 		if(!$this->has_multiple_select) {
 			$this->query = 'SELECT ';
 			$this->has_multiple_select = true;
-
-			$this->query_columns = !is_null($columns) ?
-				is_array($columns) ? $columns : array($columns) :
-				array('*');
-		} else {
-			if ($this->query_columns == array('*')) $this->query_columns = array();
-			is_array($columns) ?
-				$this->query_columns = array_merge($this->query_columns, $columns) :
-				$this->query_columns[] = $columns;
 		}
+
+		$this->last_command = __FUNCTION__;
 		return $this;
 	}
 
@@ -56,10 +73,6 @@ class ORM {
 		$cmd = !$this->has_multiple_where ? ' WHERE ' : ' AND ';
 		$this->has_multiple_where = true;
 
-		if(strpos($column, '.') === false) {
-			$column = $this->from_table . '.' . $column;
-		}
-
 		$statement = sprintf(' %s %s %s ', $cmd, $column, $condition);
 
 		if($condition === 'BETWEEN' && is_array($op) && count($op) == 2) {
@@ -67,26 +80,29 @@ class ORM {
 			$op[1] = is_numeric($op[1]) ? $op[1] : '"' . $op[1] . '"';
 			$statement .= sprintf('%s AND %s', $op[0], $op[1]);
 		} else {
-			$op = is_numeric($op) ? $op : '"' . $op . '"';
 			$statement .= sprintf('%s', $op);
 		}
 		$this->where_array[] = $statement;
+		$this->last_command = __FUNCTION__;
 		return $this;
 	}
 
 	public function distinct() {
 		$this->distinct = ' DISTINCT ';
+		$this->last_command = __FUNCTION__;
 		return $this;
 	}
 
 	public function from($table) {
 		$this->from_table = $table;
+		$this->last_command = __FUNCTION__;
 		return $this;
 	}
 
 	public function join($other_table, $option = null) {
 		$type = !is_null($option) && $this->validate_join($option) ? ' ' . $option : '';
 		$this->join_array[] = sprintf('%s JOIN %s ', $type, $other_table);
+		$this->last_command = __FUNCTION__;
 		return $this;
 	}
 
@@ -94,6 +110,7 @@ class ORM {
 		$this->validate_order_by($direction);
 		$statement = sprintf(' ORDER BY %s %s', $column, $direction);
 		$this->order_by_array[] = $statement;
+		$this->last_command = __FUNCTION__;
 		return $this;
 	}
 
@@ -101,14 +118,35 @@ class ORM {
 		if(!is_null($limit) && is_numeric($limit)) {
 			$this->limit = $limit;
 		}
+		$this->last_command = __FUNCTION__;
+		return $this;
+	}
+
+	public function group_by($variable) {
+		if(!is_null($variable)) {
+			if(strpos($variable, '.') === false) $variable = $this->from_table . '.' . $variable;
+			$this->group_by = $variable;
+		}
+		$this->last_command = __FUNCTION__;
+		return $this;
+	}
+
+	public function count() {
+		if($this->last_command == 'select') {
+			$last_element = array_pop($this->query_columns);
+			$this->query_columns[] = ' COUNT(' . $last_element . ') ';
+		}
+		$this->last_command = __FUNCTION__;
 		return $this;
 	}
 
 	public function find() {
+		$this->last_command = __FUNCTION__;
 		return $this->limit(1)->execute();
 	}
 
 	public function find_all() {
+		$this->last_command = __FUNCTION__;
 		return $this->execute();
 	}
 
@@ -116,7 +154,7 @@ class ORM {
 		$this->query .= $this->distinct;
 
 		foreach ($this->query_columns as $idx => $column) {
-			if(strpos($column, '.') == false) {
+			if(strpos($column, '.') === false && strpos($column, 'COUNT') === false) {
 				$this->query_columns[$idx] = $this->from_table . '.' . $column;
 			}
 		}
@@ -136,10 +174,16 @@ class ORM {
 			$this->query .= $order;
 		}
 
+		if(!is_null($this->group_by)) {
+			$this->query .= ' GROUP BY ' . $this->group_by;
+		}
+
 		if(!is_null($this->limit)) $this->query .= ' LIMIT ' . $this->limit;
 
 		$this->connection = new DB_Connection();
 		$result = $this->connection->query($this->query);
+
+		$this->last_command = __FUNCTION__;
 		return $result;
 	}
 
