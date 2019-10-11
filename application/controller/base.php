@@ -6,14 +6,15 @@ class Controller_Base extends Controller {
 //		Auth::login(null, null);
 //		Auth::required(array('logged', 'admin'));
 		$users = new Model_User();
-		$users->select('Host')->select('User')->join('db')->select('db.User')->where('user.User', '=', '"phpmyadmin"');
+		$users->select('Host')->select('User')->join('db')->select('db.User')->order_by('user.User', 'asc');
 		$users = $users->find_all();
 
-		// TODO: REMOVE
-		if(!empty($users)) foreach ($users as $user){
-			$user = str_replace('_', '.', $user);
-			print_r($user);echo '<br><br>';
-		}
+		$data = array(
+			'message' => 'Hello world!',
+			'users' => $users
+		);
+
+		$this->request->template = View::factory('base', $data);
 	}
 
 	public function action_404() {

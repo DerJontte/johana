@@ -50,6 +50,7 @@ class Route {
 		$instance = new $class();
 		$method = $route->get_action();
 		$instance->$method();
+		$instance->render();
 	}
 
 	/**
