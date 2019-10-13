@@ -10,10 +10,10 @@
 	</tr>
 	</thead>
 	<tbody>
-	<?php foreach ($users as $user): ?>
+	<?php if($users) foreach ($users as $user): ?>
 		<tr>
-			<td><?php print_r($user[user_User]) ?></td>
-			<td><?php print_r($user[db_User]) ?></td>
+			<td><?php print_r($user['user_User']) ?></td>
+			<td><?php print_r($user['db_User']) ?></td>
 		</tr>
 	<?php endforeach ?>
 	</tbody>

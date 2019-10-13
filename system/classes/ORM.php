@@ -2,7 +2,6 @@
 
 class ORM {
 	public $connection = null;
-
 	public $query = null;
 	public $distinct = null;
 	public $query_columns = array();
@@ -19,7 +18,7 @@ class ORM {
 	private $last_command = null;
 
 	public function __construct($query_type = null, $args = null, $db_table = null) {
-		$this->connection = new DB_Connection();
+		$this->connection = DB::connection();
 
 		$this->model = !empty(get_called_class()) ? get_called_class() : null;
 		$this->from_table = !is_null($this->model) ? strtolower(trim($this->model, 'Model_')) : $db_table;
@@ -180,7 +179,6 @@ class ORM {
 
 		if(!is_null($this->limit)) $this->query .= ' LIMIT ' . $this->limit;
 
-		$this->connection = new DB_Connection();
 		$result = $this->connection->query($this->query);
 
 		$this->last_command = __FUNCTION__;
