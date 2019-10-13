@@ -17,7 +17,21 @@ class Controller_Base extends Controller {
 		$this->request->template = View::factory('base', $data);
 	}
 
-	public function action_404() {
-		echo '404 error';
+	public function action_get_css_file() {
+		$file = $this->request->file;
+		$file_path = STATIC_PATH . '/css/' . $file;
+
+		$contents = File::get_contents($file_path);
+
+		Http::send_raw_data('Content-type: text/css', $contents);
+	}
+
+	public function action_get_js_file() {
+		$file = $this->request->file;
+		$file_path = STATIC_PATH . '/js/' . $file;
+
+		$contents = File::get_contents($file_path);
+
+		Http::send_raw_data('Content-type: application/javascript', $contents);
 	}
 }

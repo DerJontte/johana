@@ -7,7 +7,7 @@
  * to have access to the request-object.
  */
 
-abstract class Controller {
+class Controller {
 	protected $request;
 
 	public function __construct() {
@@ -15,8 +15,8 @@ abstract class Controller {
 
 		$this->request = new ArrayObject();
 
-		// Populate request-object with default values
-		$this->request->stylesheets = array(CSS_DIR . 'default.css');
+		// Populate the request-object with default values
+		$this->request->stylesheets = array('static/css/default.css');
 		$this->request->inline_scripts = array();
 		$this->request->scripts = array();
 

@@ -13,17 +13,17 @@ class Route {
 		if(self::get($name)) return false;
 
 		// Create a new Route_Object with the given parameters and add it to the static array.
-		self::$routings[] = new Route_Object(array(
-												 'name'     => $name,
-												 'uri'      => $uri,
-												 'exploded' => explode('/', trim($uri, '/')),
-												 'options'  => $options,
-											 ));
-
+		$route_object = array(
+			'name'     => $name,
+			'uri'      => $uri,
+			'exploded' => explode('/', trim($uri, '/')),
+			'options'  => $options,
+		);
+		self::$routings[] = new Route_Object($route_object);
 	}
 
 	/**
-	 * Loop through the routes and return the first match, if any.
+	 * Loop through the routes and return the first match. If no match is found, return false.
 	 * @param $name
 	 * @return bool|mixed
 	 */
@@ -36,12 +36,13 @@ class Route {
 
 	/**
 	 * Dispatch a parsed uri to the correct controller and action. Any variables extracted from
-	 * the uri is sent via a session variable to the controller.
+	 * the uri are sent via a session variable to the controller, which passes them on into the
+	 * request-object.
 	 */
 	public static function dispatch() {
 		session_start();
 
-		if(!$location = self::parse_location()) Http::Error();
+		if(!$location = self::parse_location()) throw new Exception('404');
 
 		$_SESSION['data'] = $location['data'];
 		$route = $location['route'];

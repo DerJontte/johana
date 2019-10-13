@@ -1,6 +1,6 @@
 <head>
 
-	<?php TODO: STATIC-FOLDER ATT FUNGERA! ?>
+	<?php // TODO: STATIC-FOLDER ATT FUNGERA! ?>
 
 	<?php if(!empty($stylesheets)): ?>
 	<?php foreach ($stylesheets as $stylesheet): ?>

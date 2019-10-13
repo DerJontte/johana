@@ -18,8 +18,6 @@ define('VIEW_DIR', APP_PATH . 'application/view/');
 define('CONTROLLER_DIR', APP_PATH . 'application/controller/');
 
 define('STATIC_PATH', APP_PATH . 'static/');
-define('CSS_DIR', STATIC_PATH . 'css/');
-define('JS_DIR', STATIC_PATH . 'js/');
 
 // Sistem include directories. The order of the directories is very important. Change them at Your own risk!
 $include_dirs = array(
