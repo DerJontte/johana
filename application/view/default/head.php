@@ -1,7 +1,4 @@
 <head>
-
-	<?php // TODO: STATIC-FOLDER ATT FUNGERA! ?>
-
 	<?php if(!empty($stylesheets)): ?>
 	<?php foreach ($stylesheets as $stylesheet): ?>
 			<link rel="stylesheet" type="text/css" href="<?php echo $stylesheet ?>">

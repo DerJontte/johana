@@ -21,7 +21,7 @@ define('STATIC_PATH', APP_PATH . 'static/');
 
 // Sistem include directories. The order of the directories is very important. Change them at Your own risk!
 $include_dirs = array(
-	'system',
+	'system/classes',
 	'config',
 	'application/controller',
 	'application/model',

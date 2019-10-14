@@ -1,9 +1,5 @@
 <?php
 
-
-use const db_migrations\NOT_NULL;
-use const db_migrations\PK;
-
 class Model_User extends Model {
 	protected $fields = array(
 		array('ID', 'int', array(PK)),
