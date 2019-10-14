@@ -55,6 +55,7 @@ class db_migrations {
 	 * the keys they reference.
 	 * @param $migrations
 	 * @param array $ordered_migrations
+	 * @return array
 	 */
 	static function arrange_migrations($migrations, $ordered_migrations = array()) {
 		$unordered_migrations = array();
@@ -126,22 +127,27 @@ if(in_array('makemigrations', $argv)) {
 	}
 
 	echo padded_message('optimising migrations');
-	echo padded_message('saving migrations');
+	db_migrations::arrange_migrations($migrations);
 
+	echo padded_message('saving migrations');
 	db_migrations::save_migrations($migrations);
+
 	echo padded_message('done');
 }
 
 if(in_array('migrate', $argv)) {
 	echo padded_message('loading migrations');
 	$migrations = db_migrations::load_migrations();
+
 	echo padded_message('creating database tables');
 	db_migrations::migrate($migrations);
+
 	echo padded_message('done');
 }
 
 if(in_array('clearmigrations', $argv)) {
 	echo padded_message('clearing migrations');
 	db_migrations::clear_migrations();
+
 	echo padded_message('done');
 }

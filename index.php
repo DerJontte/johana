@@ -7,7 +7,7 @@
  */
 
 // Global constants
-const IN_PRODUCTION = true;
+const IN_PRODUCTION = false;
 const VERBOSE_ERRORS = true;
 const REQUIRE_HTTPS = false;
 
