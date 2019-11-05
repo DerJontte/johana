@@ -1,6 +1,6 @@
 ## Johana Framework for PHP 
 A microframework inspired by Kohana
 
-I started this project for two main reasons: Firstly, I needed an MVC-framework with an extensive ORM, but one that was significantly more lightweight than existing ones, and secondly (but perhaps more importantly), I wanted to brush up my PHP skills that were - to put it mildly - somewhat rusty and outdated.
+I needed a customisable PHP MVC-framework with an extensive ORM, but one that was significantly more lightweight than existing ones. Solution: I wrote my own.
 
-Since the project is still in a very early stage of construction, there is no documentation whatsoever. Also, the code is littered with debugging stuff (I know, horribly bad practice!) 
+I have not gotten myself to write any formal documentation yet, but I promise I'll get to it... ;)
