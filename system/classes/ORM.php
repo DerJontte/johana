@@ -3,6 +3,8 @@
 class ORM {
 	public $connection = null;
 	public $query = null;
+	public $result = null;
+
 	public $distinct = null;
 	public $query_columns = array();
 	public $from_table = null;
@@ -150,6 +152,12 @@ class ORM {
 	}
 
 	public function execute() {
+		$this->last_command = __FUNCTION__;
+		$this->result = $this->connection->query($this->compile_query());
+		return $this->result;
+	}
+
+	public function compile_query() {
 		$this->query .= $this->distinct;
 
 		foreach ($this->query_columns as $idx => $column) {
@@ -179,10 +187,9 @@ class ORM {
 
 		if(!is_null($this->limit)) $this->query .= ' LIMIT ' . $this->limit;
 
-		$result = $this->connection->query($this->query);
-
+		$this->query = mysqli_real_escape_string($this->connection, $this->query);
 		$this->last_command = __FUNCTION__;
-		return $result;
+		return $this->query;
 	}
 
 	public function validate_condition($condition) {

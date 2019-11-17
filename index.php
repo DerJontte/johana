@@ -7,9 +7,9 @@
  */
 
 // Global constants
-const IN_PRODUCTION = false;
-const VERBOSE_ERRORS = true;
-const REQUIRE_HTTPS = false;
+define(IN_PRODUCTION, false);
+define(VERBOSE_ERRORS, true);
+define(REQUIRE_HTTPS, false);
 
 // Application paths
 define('APP_PATH', getcwd() . '/');

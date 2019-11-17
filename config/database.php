@@ -8,4 +8,4 @@
 define('DB_HOST', 'mysql');
 define('DB_USER', 'user');
 define('DB_PASS', 'pass');
-define('DB_NAME', 'johana');
+define('DB_NAME', 'mysql');

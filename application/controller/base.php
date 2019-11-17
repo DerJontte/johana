@@ -6,7 +6,7 @@ class Controller_Base extends Controller {
 //		Auth::login(null, null);
 //		Auth::required(array('logged', 'admin'));
 		$users = new Model_User();
-		$users->select('Host')->select('User')->join('db')->select('db.User')->order_by('user.User', 'asc');
+		$users->select('Host')->select('user'); // SENSITIVE DATA! NEVER EXPOSE IN PRODUCTION!
 		$users = $users->find_all();
 
 		$data = array(
